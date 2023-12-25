@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
 import { USER_ROLES } from './user.constant';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userSchema = new Schema<TUser>(
   {
@@ -18,6 +20,7 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: [true, 'password is required'],
+      select: 0,
     },
     role: {
       type: String,
@@ -32,5 +35,24 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   },
 );
+
+// hashed password before saving
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+// Remove password field when converting to JSON
+userSchema.set('toJSON', {
+    transform: function (doc, ret) {
+      delete ret.password;
+      return ret;
+    }
+  });
 
 export const User = model<TUser>('User', userSchema);
