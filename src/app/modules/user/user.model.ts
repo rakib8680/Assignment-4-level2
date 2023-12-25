@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
-import { USER_ROLES } from './user.constant';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { roles } from './user.constant';
 
 const userSchema = new Schema<TUser>(
   {
@@ -25,7 +25,7 @@ const userSchema = new Schema<TUser>(
     role: {
       type: String,
       enum: {
-        values: USER_ROLES,
+        values: roles,
         message: '{VALUE} is not a valid role',
       },
       default: 'user',
