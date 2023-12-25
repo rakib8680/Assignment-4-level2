@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, userModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import { roles } from './user.constant';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, userModel>(
   {
     username: {
       type: String,
@@ -55,4 +55,11 @@ userSchema.set('toJSON', {
   },
 });
 
-export const User = model<TUser>('User', userSchema);
+// check if the user is exist
+userSchema.statics.isUserExists = async function (username: string) {
+  return await User.findOne({ username })
+    .select('+password')
+    .select('-createdAt -updatedAt -__v');
+};
+
+export const User = model<TUser, userModel>('User', userSchema);
