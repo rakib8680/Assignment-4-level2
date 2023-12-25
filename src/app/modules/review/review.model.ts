@@ -7,9 +7,13 @@ const reviewSchema = new Schema<TReview>({
     ref: 'Course',
     required: [true, 'Course id is required'],
   },
-
   rating: { type: Number, required: [true, 'Rating is required'] },
   review: { type: String },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Review must be created by a user'],
+  },
 });
 
 export const Review = model<TReview>('Review', reviewSchema);
