@@ -42,6 +42,11 @@ const courseSchema = new Schema<TCourse>({
     },
     description: String,
   },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Please provide the id of the course-creator'],
+  },
 });
 
 // pre middleware to calculate duration in weeks

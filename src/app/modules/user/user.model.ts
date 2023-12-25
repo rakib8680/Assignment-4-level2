@@ -49,10 +49,10 @@ userSchema.pre('save', async function (next) {
 
 // Remove password field when converting to JSON
 userSchema.set('toJSON', {
-    transform: function (doc, ret) {
-      delete ret.password;
-      return ret;
-    }
-  });
+  transform: function (doc, ret) {
+    delete ret.password;
+    return ret;
+  },
+});
 
 export const User = model<TUser>('User', userSchema);

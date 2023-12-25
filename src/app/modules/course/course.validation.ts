@@ -23,6 +23,7 @@ const createCourseSchemaValidation = z.object({
   provider: z.string(),
   durationInWeeks: z.number().optional(),
   details: detailsSchemaValidation,
+  createdBy: z.string(),
 });
 
 const updateCourseSchemaValidation = createCourseSchemaValidation.partial();
