@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { USER_ROLES } from './user.constant';
 
 const isStrongPassword = (password: string) => {
-  // Password must be at least 8 characters long
+  // Password must be at least 4 characters long
   // Should contain at least one uppercase letter, one lowercase letter, and one digit
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,}$/.test(password);
 };
