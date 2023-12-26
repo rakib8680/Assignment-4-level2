@@ -10,7 +10,6 @@ export type TUser = {
   role?: TRole;
 };
 
-// #todo
 export interface userModel extends Model<TUser> {
   isUserExists(id: string): Promise<TUser>;
   isPasswordMatched(

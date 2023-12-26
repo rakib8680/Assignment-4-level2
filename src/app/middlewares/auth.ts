@@ -26,7 +26,7 @@ const auth = (...roles: TRole[]) => {
     //check if the user is exist
     const user = await User.findById(_id);
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
+      throw new AppError(httpStatus.NOT_FOUND, 'The user is not exist !');
     }
 
     // if the user role is not matched
@@ -36,6 +36,7 @@ const auth = (...roles: TRole[]) => {
 
     // set the user in req object
     req.user = decoded as JwtPayload;
+
     next();
   });
 };

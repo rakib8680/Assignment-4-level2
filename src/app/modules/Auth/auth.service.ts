@@ -4,6 +4,8 @@ import { TLoginUser } from './auth.interface';
 import httpStatus from 'http-status';
 import config from '../../config';
 import { createToken } from './auth.utils';
+import { JwtPayload } from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 // login user
 const loginUser = async (payload: TLoginUser) => {
@@ -40,13 +42,52 @@ const loginUser = async (payload: TLoginUser) => {
 };
 
 // change password
-const changePassword = async (payload: {
-  currentPassword: string;
-  newPassword: string;
-}) => {
+const changePassword = async (
+  payload: {
+    currentPassword: string;
+    newPassword: string;
+  },
+  user: JwtPayload,
+) => {
+  // checking if the user is exist
+  const userFromDB = await User.findById(user._id).select('+password');
+  if (!userFromDB) {
+    throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
+  }
 
-  
+  //checking if the Current password is correct
+  if (
+    !(await User.isPasswordMatched(
+      payload?.currentPassword,
+      userFromDB?.password,
+    ))
+  ) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Incorrect Current password !');
+  }
 
+  // check if new and current password are the same
+  if (payload.currentPassword === payload.newPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'New password must be different from current password !',
+    );
+  }
+
+  // hash the new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  // update the password
+  const result = await User.findByIdAndUpdate(
+    userFromDB._id,
+    {
+      password: newHashedPassword,
+    },
+    { new: true },
+  );
+  return result;
 };
 
 export const authServices = {
