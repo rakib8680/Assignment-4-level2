@@ -3,10 +3,16 @@ import AppError from '../../errors/appError';
 import { queryFunction } from '../../helpers/queryFunction';
 import { TCourse } from './course.interface';
 import { Course } from './course.model';
+import { JwtPayload } from 'jsonwebtoken';
 
 // create a course
-const createCourse = async (payload: TCourse) => {
-  const result = await Course.create(payload);
+const createCourse = async (payload: TCourse, courseCreator: JwtPayload) => {
+  const newCourse = {
+    ...payload,
+    createdBy: courseCreator._id,
+  };
+
+  const result = await Course.create(newCourse);
   return result;
 };
 

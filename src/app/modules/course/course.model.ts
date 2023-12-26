@@ -45,7 +45,6 @@ const courseSchema = new Schema<TCourse>({
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'Please provide the id of the course-creator'],
   },
 });
 

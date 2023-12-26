@@ -5,7 +5,7 @@ import { courseServices } from './course.service';
 // create course
 const createCourse = catchAsync(async (req, res) => {
   const courseData = req.body;
-  const result = await courseServices.createCourse(courseData);
+  const result = await courseServices.createCourse(courseData, req.user);
 
   sendResponse(res, {
     success: true,
