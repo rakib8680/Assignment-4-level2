@@ -28,7 +28,9 @@ const createCourse = async (payload: TCourse, courseCreator: JwtPayload) => {
 const getAllCourse = async (
   query: Record<string, unknown>,
 ): Promise<TCourse[]> => {
-  const result = await queryFunction(Course.find(), query);
+  const result = await queryFunction(Course.find(), query).populate(
+    'createdBy',
+  );
   return result;
 };
 
