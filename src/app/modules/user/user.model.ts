@@ -57,7 +57,7 @@ userSchema.set('toJSON', {
 
 // check if the user is exist
 userSchema.statics.isUserExists = async function (username: string) {
-  return await User.findOne({ username }).select('+password');
+  return await User.findOne({ username }).select('+password -__v -createdAt -updatedAt');
 };
 
 // check if the password is matched
