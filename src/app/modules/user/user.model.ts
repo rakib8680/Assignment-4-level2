@@ -57,9 +57,15 @@ userSchema.set('toJSON', {
 
 // check if the user is exist
 userSchema.statics.isUserExists = async function (username: string) {
-  return await User.findOne({ username })
-    .select('+password')
-    .select('-createdAt -updatedAt -__v');
+  return await User.findOne({ username }).select('+password');
+};
+
+// check if the password is matched
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword: string,
+  hashedPassword: string,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
 export const User = model<TUser, userModel>('User', userSchema);

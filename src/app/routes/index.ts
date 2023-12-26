@@ -2,27 +2,22 @@ import { Router } from 'express';
 import { categoryRoutes } from '../modules/category/category.route';
 import { courseRoutes } from '../modules/course/course.route';
 import { reviewRoutes } from '../modules/review/review.route';
-import { userRoutes } from '../modules/user/user.routes';
 import { AuthRoutes } from '../modules/Auth/auth.routes';
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: '/api',
+    path: '/',
     route: courseRoutes,
   },
   {
-    path: '/api',
+    path: '/',
     route: categoryRoutes,
   },
   {
-    path: '/api',
-    route: reviewRoutes,
-  },
-  {
     path: '/',
-    route: userRoutes,
+    route: reviewRoutes,
   },
   {
     path: '/auth',

@@ -10,6 +10,11 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
   }
 
+  // checking if the password is correct
+  if (!(await User.isPasswordMatched(payload.password, user.password))) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Incorrect password !');
+  }
+
   return user;
 };
 

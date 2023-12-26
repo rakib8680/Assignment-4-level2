@@ -9,6 +9,7 @@ import { handleZodError } from '../errors/handleZodErrors';
 import { TErrorResponse } from '../types/TErrorResponse';
 import { handleCastError } from '../errors/handleCastError';
 import { handleDuplicateKeyError } from '../errors/handleDuplicateKeyError';
+import AppError from '../errors/appError';
 
 export const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -30,8 +31,19 @@ export const globalErrorHandler: ErrorRequestHandler = (
     errorResponse = handleCastError(err);
   } else if (err?.code === 11000) {
     errorResponse = handleDuplicateKeyError(err);
+  } else if (err instanceof AppError) {
+    errorResponse = {
+      success: false,
+      message: 'Validation Error',
+      errorMessage: err.message,
+    };
+  } else if (err instanceof Error) {
+    errorResponse = {
+      success: false,
+      message: 'Validation Error',
+      errorMessage: err.message,
+    };
   }
-
   // send ultimate response
   return res.status(err.statusCode || 500).json({
     success: errorResponse.success,
