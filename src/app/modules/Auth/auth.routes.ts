@@ -4,10 +4,9 @@ import { requestValidation } from '../../middlewares/requestValidation';
 import { authControllers } from './auth.controller';
 import { userSchemaValidation } from '../user/user.validation';
 import { userControllers } from '../user/user.controller';
-
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
-
 
 router.post(
   '/register',
@@ -21,5 +20,11 @@ router.post(
   authControllers.loginUser,
 );
 
+router.post(
+  '/change-password',
+  requestValidation(AuthValidation.changePasswordValidationSchema),
+  auth('admin', 'user'),
+  // authControllers.changePassword,
+);
 
 export const AuthRoutes = router;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 import { TUser, userModel } from './user.interface';
 import bcrypt from 'bcrypt';
@@ -38,7 +39,6 @@ const userSchema = new Schema<TUser, userModel>(
 
 // hashed password before saving
 userSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   user.password = await bcrypt.hash(
     user.password,
@@ -57,7 +57,9 @@ userSchema.set('toJSON', {
 
 // check if the user is exist
 userSchema.statics.isUserExists = async function (username: string) {
-  return await User.findOne({ username }).select('+password -__v -createdAt -updatedAt');
+  return await User.findOne({ username }).select(
+    '+password -__v -createdAt -updatedAt',
+  );
 };
 
 // check if the password is matched

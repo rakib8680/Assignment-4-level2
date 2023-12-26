@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
+import { Model,  } from 'mongoose';
 
 export type TRole = 'admin' | 'user';
 
