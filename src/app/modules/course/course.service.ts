@@ -4,9 +4,17 @@ import { queryFunction } from '../../helpers/queryFunction';
 import { TCourse } from './course.interface';
 import { Course } from './course.model';
 import { JwtPayload } from 'jsonwebtoken';
+import { Category } from '../category/category.model';
 
 // create a course
 const createCourse = async (payload: TCourse, courseCreator: JwtPayload) => {
+  // check if category exist
+  const isCategoryExist = await Category.findById(payload.categoryId);
+  if (!isCategoryExist) {
+    throw new AppError(404, 'Category not found');
+  }
+
+  // make new course object
   const newCourse = {
     ...payload,
     createdBy: courseCreator._id,
