@@ -28,6 +28,14 @@ const auth = (...roles: TRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
     }
 
+     // if the user role is not matched
+     if (roles && !roles.includes(role)) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+      }
+
+    console.log(user);
+
+
     next();
   });
 };
