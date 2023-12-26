@@ -6,7 +6,7 @@ import { courseValidations } from './course.validation';
 const router = Router();
 
 router.post(
-  '/course',
+  '/courses',
   requestValidation(courseValidations.createCourseSchemaValidation),
   courseControllers.createCourse,
 );
