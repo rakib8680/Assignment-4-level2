@@ -108,7 +108,8 @@ const updateCourse = async (payload: Partial<TCourse>, id: string) => {
   return result;
 };
 
-// get single course with reviews \
+// todo populate createdBy
+// get single course with reviews
 const getCourseWithReviews = async (id: string) => {
   const result = await Course.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(id) } },
@@ -121,6 +122,7 @@ const getCourseWithReviews = async (id: string) => {
       },
     },
   ]);
+
   return result;
 };
 
@@ -135,6 +137,19 @@ const getBestCourse = async () => {
         foreignField: 'courseId',
         as: 'reviews',
       },
+    },
+    // new stage to populate another field
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'createdBy',
+        foreignField: '_id',
+        as: 'createdBy',
+      },
+    },
+    // new stage to unwind createdBy
+    {
+      $unwind: '$createdBy',
     },
 
     // second stage
@@ -163,6 +178,10 @@ const getBestCourse = async () => {
     {
       $project: {
         reviews: false,
+        'createdBy.password': false,
+        'createdBy.createdAt': false,
+        'createdBy.updatedAt': false,
+        'createdBy.__v': false,
       },
     },
   ]);
