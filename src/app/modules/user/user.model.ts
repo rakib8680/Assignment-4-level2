@@ -23,6 +23,7 @@ const userSchema = new Schema<TUser, userModel>(
       required: [true, 'password is required'],
       select: 0,
     },
+    passwordChangedAt: { type: Date, select: 0 },
     role: {
       type: String,
       enum: {
@@ -55,19 +56,23 @@ userSchema.set('toJSON', {
   },
 });
 
-// check if the user is exist
-userSchema.statics.isUserExists = async function (username: string) {
-  return await User.findOne({ username }).select(
-    '+password -__v -createdAt -updatedAt',
-  );
-};
-
 // check if the password is matched
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword: string,
   hashedPassword: string,
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+// check if the jwt is issued before password changed
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimeStamp: Date,
+  jwtIssuedTimeStamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimeStamp).getTime() / 1000;
+
+  return passwordChangedTime > jwtIssuedTimeStamp;
 };
 
 export const User = model<TUser, userModel>('User', userSchema);

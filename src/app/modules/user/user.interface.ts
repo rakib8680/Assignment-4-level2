@@ -7,13 +7,17 @@ export type TUser = {
   username: string;
   email: string;
   password: string;
+  passwordChangedAt?: Date;
   role?: TRole;
 };
 
 export interface userModel extends Model<TUser> {
-  isUserExists(id: string): Promise<TUser>;
   isPasswordMatched(
     plainTextPassword: string,
     hashedPassword: string,
   ): Promise<boolean>;
+  isJWTIssuedBeforePasswordChanged(
+    passwordChangedTime: Date,
+    jwtIssuedTime: number,
+  ): boolean;
 }

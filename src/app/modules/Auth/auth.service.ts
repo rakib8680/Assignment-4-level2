@@ -84,6 +84,7 @@ const changePassword = async (
     userFromDB._id,
     {
       password: newHashedPassword,
+      passwordChangedAt: new Date(),
     },
     { new: true },
   );

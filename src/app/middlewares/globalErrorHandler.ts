@@ -23,7 +23,6 @@ export const globalErrorHandler: ErrorRequestHandler = (
     errorMessage: 'Something Went Wrong',
   };
 
-
   if (err instanceof ZodError) {
     errorResponse = handleZodError(err);
   } else if (err?.name === 'ValidationError') {

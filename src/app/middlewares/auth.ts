@@ -20,21 +20,30 @@ const auth = (...roles: TRole[]) => {
       config.jwt_access_secret as string,
     ) as JwtPayload;
 
-    const { _id, role } = decoded;
+    const { _id, role, iat } = decoded;
 
-    //check if the user is exist
-    const user = await User.findById(_id);
+    //check if the user  exist
+    const user = await User.findById(_id).select('+passwordChangedAt');
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'The user is not exist !');
     }
 
-    // if the user role is not matched
+    // if the user-role is not matched
     if (roles && !roles.includes(role)) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
 
-    // set the user in req object
-    req.user = decoded as JwtPayload;
+    if (
+      user.passwordChangedAt &&
+      User.isJWTIssuedBeforePasswordChanged(
+        user.passwordChangedAt,
+        iat as number,
+      )
+    ){
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Password changed , Please Login again !');
+    }
+      // set the user in req object
+      req.user = decoded as JwtPayload;
 
     next();
   });
