@@ -104,7 +104,7 @@ const updateCourse = async (payload: Partial<TCourse>, id: string) => {
   const result = await Course.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
-  });
+  }).populate('createdBy');
   return result;
 };
 

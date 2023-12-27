@@ -14,7 +14,6 @@ const auth = (...roles: TRole[]) => {
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
-
     // check if the token is valid
     const decoded = jwt.verify(
       token,
