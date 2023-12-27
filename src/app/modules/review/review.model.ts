@@ -12,7 +12,6 @@ const reviewSchema = new Schema<TReview>({
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'Review must be created by a user'],
   },
 });
 

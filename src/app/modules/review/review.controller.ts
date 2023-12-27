@@ -4,8 +4,9 @@ import { reviewServices } from './review.service';
 
 // create review
 const createReview = catchAsync(async (req, res) => {
+
   const reviewData = req.body;
-  const result = await reviewServices.createReview(reviewData);
+  const result = await reviewServices.createReview(reviewData, req.user);
 
   sendResponse(res, {
     success: true,
