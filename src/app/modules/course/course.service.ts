@@ -112,13 +112,78 @@ const updateCourse = async (payload: Partial<TCourse>, id: string) => {
 // get single course with reviews
 const getCourseWithReviews = async (id: string) => {
   const result = await Course.aggregate([
+    // stage 1
     { $match: { _id: new mongoose.Types.ObjectId(id) } },
+
+    // stage 2
     {
       $lookup: {
         from: 'reviews',
         localField: '_id',
         foreignField: 'courseId',
         as: 'reviews',
+      },
+    },
+
+    // stage 3
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'createdBy',
+        foreignField: '_id',
+        as: 'createdBy',
+      },
+    },
+
+    // stage 4
+    {
+      $lookup: {
+        from: 'reviews',
+        let: { courseId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$courseId', '$$courseId'],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'createdBy',
+              foreignField: '_id',
+              as: 'createdBy',
+            },
+          },
+          {
+            $unwind: '$createdBy',
+          },
+          {
+            $project: {
+              'createdBy.password': false,
+              'createdBy.createdAt': false,
+              'createdBy.updatedAt': false,
+              'createdBy.__v': false,
+            },
+          },
+        ],
+        as: 'reviews',
+      },
+    },
+
+    // stage 4
+    {
+      $unwind: '$createdBy',
+    },
+
+    // stage 5
+    {
+      $project: {
+        'createdBy.password': false,
+        'createdBy.createdAt': false,
+        'createdBy.updatedAt': false,
+        'createdBy.__v': false,
       },
     },
   ]);
@@ -138,7 +203,7 @@ const getBestCourse = async () => {
         as: 'reviews',
       },
     },
-    // new stage to populate another field
+    //second stage
     {
       $lookup: {
         from: 'users',
@@ -147,12 +212,12 @@ const getBestCourse = async () => {
         as: 'createdBy',
       },
     },
-    // new stage to unwind createdBy
+    // third stage
     {
       $unwind: '$createdBy',
     },
 
-    // second stage
+    // fourth stage
     {
       $addFields: {
         averageRating: { $avg: '$reviews.rating' },
@@ -160,7 +225,7 @@ const getBestCourse = async () => {
       },
     },
 
-    // third stage
+    // fifth stage
     {
       $sort: {
         averageRating: -1,
@@ -168,12 +233,12 @@ const getBestCourse = async () => {
       },
     },
 
-    // fourth stage
+    // sixth stage
     {
       $limit: 1,
     },
 
-    // fifth stage
+    // seventh stage
 
     {
       $project: {

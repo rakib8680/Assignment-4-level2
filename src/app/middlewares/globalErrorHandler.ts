@@ -23,6 +23,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
     errorMessage: 'Something Went Wrong',
   };
 
+
   if (err instanceof ZodError) {
     errorResponse = handleZodError(err);
   } else if (err?.name === 'ValidationError') {
@@ -31,6 +32,33 @@ export const globalErrorHandler: ErrorRequestHandler = (
     errorResponse = handleCastError(err);
   } else if (err?.code === 11000) {
     errorResponse = handleDuplicateKeyError(err);
+  } else if (err?.name === 'JsonWebTokenError') {
+    errorResponse = {
+      success: false,
+      message: 'Unauthorized Access',
+      errorMessage:
+        'You do not have the necessary permissions to access this resource.',
+      errorDetails: 'null',
+      stack: 'null',
+    };
+  } else if (err?.name === 'TokenExpiredError') {
+    errorResponse = {
+      success: false,
+      message: 'Unauthorized Access',
+      errorMessage:
+        'You do not have the necessary permissions to access this resource.',
+      errorDetails: 'null',
+      stack: 'null',
+    };
+  } else if (err?.message === 'You are not authorized !') {
+    errorResponse = {
+      success: false,
+      message: 'Unauthorized Access',
+      errorMessage:
+        'You do not have the necessary permissions to access this resource.',
+      errorDetails: 'null',
+      stack: 'null',
+    };
   } else if (err instanceof AppError) {
     errorResponse = {
       success: false,
@@ -44,12 +72,13 @@ export const globalErrorHandler: ErrorRequestHandler = (
       errorMessage: err.message,
     };
   }
+
   // send ultimate response
   return res.status(err.statusCode || 500).json({
     success: errorResponse.success,
     message: errorResponse.message,
     errorMessage: errorResponse.errorMessage,
-    errorDetails: err,
-    stack: err?.stack,
+    errorDetails: errorResponse.errorDetails || err,
+    stack: errorResponse.stack || err?.stack,
   });
 };
