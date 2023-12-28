@@ -164,6 +164,7 @@ const getCourseWithReviews = async (id: string) => {
               'createdBy.createdAt': false,
               'createdBy.updatedAt': false,
               'createdBy.__v': false,
+              'createdBy.passwordChangedAt': false,
             },
           },
         ],
@@ -183,6 +184,7 @@ const getCourseWithReviews = async (id: string) => {
         'createdBy.createdAt': false,
         'createdBy.updatedAt': false,
         'createdBy.__v': false,
+        'createdBy.passwordChangedAt': false,
       },
     },
   ]);

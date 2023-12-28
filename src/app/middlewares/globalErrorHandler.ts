@@ -59,7 +59,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
       stack: 'null',
     };
   } else if (err?.message === 'passwordChangeFailed') {
-    errorResponse = { 
+    errorResponse = {
       success: false,
       message: 'Password Change Failed',
       errorMessage:
