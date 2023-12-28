@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // custom app error
 class AppError extends Error {
   constructor(

@@ -59,7 +59,7 @@ const getCourseWithReviews = catchAsync(async (req, res) => {
     success: true,
     statusCode: 200,
     message: 'Course and Reviews retrieved successfully',
-    data: {course:course[0]},
+    data: { course: course[0] },
   });
 });
 
@@ -71,7 +71,7 @@ const getBestCourse = catchAsync(async (req, res) => {
     success: true,
     statusCode: 200,
     message: 'Best course retrieved successfully',
-    data:  {course:result[0]},
+    data: { course: result[0] },
   });
 });
 

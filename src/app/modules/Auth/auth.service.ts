@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt';
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
   const user = await User.findOne({ username: payload.username }).select(
-    '+password -__v -createdAt -updatedAt',
+    '+password -__v -createdAt -updatedAt -passwordChangedAt -passwordHistory',
   );
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
@@ -41,6 +41,8 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+
+
 // change password
 const changePassword = async (
   payload: {
@@ -50,10 +52,13 @@ const changePassword = async (
   user: JwtPayload,
 ) => {
   // checking if the user is exist
-  const userFromDB = await User.findById(user._id).select('+password');
+  const userFromDB = await User.findById(user._id).select(
+    '+password +createdAt +passwordChangedAt',
+  );
   if (!userFromDB) {
     throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
   }
+
 
   //checking if the Current password is correct
   if (
@@ -79,15 +84,28 @@ const changePassword = async (
     Number(config.bcrypt_salt_rounds),
   );
 
+  // Save the old password to the password history
+  const passwordHistoryEntry = {
+    password: userFromDB.password, 
+    changedAt: userFromDB.passwordChangedAt || userFromDB.createdAt,
+  }; 
+
   // update the password
   const result = await User.findByIdAndUpdate(
     userFromDB._id,
     {
       password: newHashedPassword,
       passwordChangedAt: new Date(),
+      $push: {
+        passwordHistory: {
+          $each: [passwordHistoryEntry],
+          $position: 0,
+          $slice: 2,
+        },
+      },
     },
     { new: true },
-  );
+  ).select('-passwordHistory');
   return result;
 };
 

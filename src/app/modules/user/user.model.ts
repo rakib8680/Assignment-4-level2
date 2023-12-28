@@ -24,6 +24,18 @@ const userSchema = new Schema<TUser, userModel>(
       select: 0,
     },
     passwordChangedAt: { type: Date, select: 0 },
+    passwordHistory: [
+      {
+        password: {
+          type: String,
+          required: true,
+        },
+        changedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     role: {
       type: String,
       enum: {
@@ -31,6 +43,9 @@ const userSchema = new Schema<TUser, userModel>(
         message: '{VALUE} is not a valid role',
       },
       default: 'user',
+    },
+    createdAt: {
+      type: Date,
     },
   },
   {

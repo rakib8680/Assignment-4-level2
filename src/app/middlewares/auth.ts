@@ -39,11 +39,14 @@ const auth = (...roles: TRole[]) => {
         user.passwordChangedAt,
         iat as number,
       )
-    ){
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Password changed , Please Login again !');
+    ) {
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'Password changed , Please Login again !',
+      );
     }
-      // set the user in req object
-      req.user = decoded as JwtPayload;
+    // set the user in req object
+    req.user = decoded as JwtPayload;
 
     next();
   });

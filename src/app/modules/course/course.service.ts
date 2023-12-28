@@ -108,7 +108,6 @@ const updateCourse = async (payload: Partial<TCourse>, id: string) => {
   return result;
 };
 
-// todo populate createdBy
 // get single course with reviews
 const getCourseWithReviews = async (id: string) => {
   const result = await Course.aggregate([

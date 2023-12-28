@@ -3,11 +3,18 @@ import { Model } from 'mongoose';
 
 export type TRole = 'admin' | 'user';
 
+interface PasswordHistory {
+  password: string;
+  changedAt: Date;
+}
+
 export type TUser = {
   username: string;
   email: string;
   password: string;
   passwordChangedAt?: Date;
+  passwordHistory?: PasswordHistory[];
+  createdAt?: Date;
   role?: TRole;
 };
 

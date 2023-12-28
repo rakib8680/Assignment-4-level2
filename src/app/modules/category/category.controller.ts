@@ -23,7 +23,7 @@ const getAllCategories = catchAsync(async (req, res) => {
     success: true,
     statusCode: 201,
     message: 'Categories retrieved successfully',
-    data: {categories},
+    data: { categories },
   });
 });
 
