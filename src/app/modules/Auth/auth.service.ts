@@ -49,7 +49,7 @@ const changePassword = async (
   },
   user: JwtPayload,
 ) => {
-  // checking if the user is exist
+  // check if the user is exist
   const userFromDB = await User.findById(user._id).select(
     '+password +createdAt +passwordChangedAt',
   );
@@ -57,7 +57,7 @@ const changePassword = async (
     throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
   }
 
-  //checking if the Current password is correct
+  //check if the Current password is correct
   if (
     !(await User.isPasswordMatched(
       payload?.currentPassword,
@@ -70,6 +70,15 @@ const changePassword = async (
   // check if new and current password are the same
   if (payload.currentPassword === payload.newPassword) {
     throw new AppError(httpStatus.BAD_REQUEST, 'passwordChangeFailed');
+  }
+
+  // check if the new password is in the password history
+  if (userFromDB.passwordHistory && userFromDB.passwordHistory.length > 0) {
+    for (const pass of userFromDB.passwordHistory) {
+      if (await User.isPasswordMatched(payload.newPassword, pass.password)) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'passwordChangeFailed');
+      }
+    }
   }
 
   // hash the new password
