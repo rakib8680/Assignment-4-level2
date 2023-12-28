@@ -58,6 +58,14 @@ export const globalErrorHandler: ErrorRequestHandler = (
       errorDetails: 'null',
       stack: 'null',
     };
+  } else if (err?.message === 'passwordChangeFailed') {
+    errorResponse = { 
+      success: false,
+      message: 'Password Change Failed',
+      errorMessage:
+        'Password change failed. Ensure the new password is unique and not among the last 2 used ',
+      stack: 'null',
+    };
   } else if (err instanceof AppError) {
     errorResponse = {
       success: false,

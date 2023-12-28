@@ -41,8 +41,6 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
-
-
 // change password
 const changePassword = async (
   payload: {
@@ -59,7 +57,6 @@ const changePassword = async (
     throw new AppError(httpStatus.NOT_FOUND, 'The user is not found !');
   }
 
-
   //checking if the Current password is correct
   if (
     !(await User.isPasswordMatched(
@@ -72,10 +69,7 @@ const changePassword = async (
 
   // check if new and current password are the same
   if (payload.currentPassword === payload.newPassword) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'New password must be different from current password !',
-    );
+    throw new AppError(httpStatus.BAD_REQUEST, 'passwordChangeFailed');
   }
 
   // hash the new password
@@ -86,9 +80,9 @@ const changePassword = async (
 
   // Save the old password to the password history
   const passwordHistoryEntry = {
-    password: userFromDB.password, 
+    password: userFromDB.password,
     changedAt: userFromDB.passwordChangedAt || userFromDB.createdAt,
-  }; 
+  };
 
   // update the password
   const result = await User.findByIdAndUpdate(

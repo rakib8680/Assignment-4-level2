@@ -2,7 +2,7 @@
 export type TErrorResponse = {
   success: boolean;
   message: string;
-  errorMessage: string;
+  errorMessage?: string;
   errorDetails?: any;
   stack?: any;
 };
