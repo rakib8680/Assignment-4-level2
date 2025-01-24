@@ -35,6 +35,7 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_access_secret as string,
     '1d',
   );
+
   return {
     user,
     accessToken,
