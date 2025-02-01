@@ -8,8 +8,7 @@ import httpStatus from 'http-status';
 // create review
 const createReview = async (payload: TReview, reviewCreator: JwtPayload) => {
   // check if the course exists before creating a review
-  const course = await Course.findById(payload.courseId);
-  if (!course) {
+  if (!(await Course.findById(payload.courseId))) {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found');
   }
 
